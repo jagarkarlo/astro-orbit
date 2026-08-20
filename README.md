@@ -7,15 +7,18 @@ a radiant meteor shower.
 
 Static, zero client framework, one config file.
 
+**[Live demo](https://jagarkarlo.github.io/astro-orbit/)**
+
 > **Use this template** — click the green button on GitHub, or
 > `gh repo create my-portfolio --template jagarkarlo/astro-orbit`.
 
 ## What you get
 
-- Home, about, work, writing, search, contact and 404 pages
+- Home, about, work, blog, search, contact and 404 pages
 - **Project detail pages** at `/work/<slug>/` rendered from Markdown
-- **A writing collection** at `/writing/` with per-post pages and drafts
-- **Client-side search** over projects and writing, no framework, no service
+- **A blog collection** at `/blog/` with per-post pages, drafts and optional
+  LinkedIn cross-links
+- **Client-side search** over projects and posts, no framework, no service
 - **RSS feed** at `/rss.xml`
 - **A command console** on `Ctrl+K` / `Cmd+K`
 - Sitemap, robots policy, Open Graph tags and Schema.org person metadata
@@ -128,7 +131,7 @@ is where a case study goes: the problem, what you built, and the evidence.
 
 ## Adding a post
 
-Create a Markdown file in `src/content/writing/`:
+Create a Markdown file in `src/content/blog/`:
 
 ```markdown
 ---
@@ -137,6 +140,7 @@ description: One line, used in listings, search and RSS.
 date: 2026-01-01
 updated: 2026-02-01
 tags: [Kubernetes, Observability]
+linkedin: https://www.linkedin.com/posts/your-post-url
 draft: false
 ---
 
@@ -144,7 +148,20 @@ Your post.
 ```
 
 Posts are ordered newest first. `draft: true` keeps a post out of the index, the
-sitemap, the search index and the feed.
+sitemap, the search index and the feed. Setting `linkedin` adds a "Read the
+original on LinkedIn" link at the end of the post — useful when you publish
+there first and mirror it here.
+
+## Adding a CV
+
+Drop a PDF into `public/` and point `SITE.cv` at it:
+
+```ts
+cv: "/CV.pdf",
+```
+
+A download button then appears on the about page. While `cv` is an empty string
+the button stays hidden, so there is no broken link in a fresh clone.
 
 ## Search
 
