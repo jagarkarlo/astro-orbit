@@ -1,5 +1,12 @@
 # Astro Orbit
 
+<p align="center">
+  <img alt="Astro" src="https://img.shields.io/badge/Astro-BC52EE?style=for-the-badge&logo=astro&logoColor=white" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
+  <img alt="License" src="https://img.shields.io/badge/License-MIT-3FB950?style=for-the-badge" />
+</p>
+
 A minimalist Astro portfolio template with an interactive orbital relay hero:
 a planet limb anchored to the viewport, ground stations on the horizon,
 satellites that link to a station only while above it, real constellations, and
