@@ -16,16 +16,18 @@ const projects = defineCollection({
   }),
 });
 
-const writing = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/writing" }),
+const blog = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/blog" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
     date: z.coerce.date(),
     updated: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
+    /** Canonical LinkedIn post, when the piece was published there first. */
+    linkedin: z.string().url().optional(),
     draft: z.boolean().default(false),
   }),
 });
 
-export const collections = { projects, writing };
+export const collections = { projects, blog };

@@ -4,16 +4,16 @@ import { getCollection } from "astro:content";
 export const GET: APIRoute = async ({ site }) => {
   const base = import.meta.env.BASE_URL.replace(/\/$/, "");
   const projects = await getCollection("projects", ({ data }) => !data.draft);
-  const writing = await getCollection("writing", ({ data }) => !data.draft);
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
   const routes = [
     "/",
     "/about/",
     "/work/",
-    "/writing/",
+    "/blog/",
     "/search/",
     "/contact/",
     ...projects.map((project) => `/work/${project.id}/`),
-    ...writing.map((post) => `/writing/${post.id}/`),
+    ...posts.map((post) => `/blog/${post.id}/`),
   ];
   const locations = routes.map((route) => new URL(`${base}${route}`, site));
   const body = `<?xml version="1.0" encoding="UTF-8"?>

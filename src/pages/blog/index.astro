@@ -5,30 +5,30 @@ import SiteFooter from "../../components/SiteFooter.astro";
 import SiteHeader from "../../components/SiteHeader.astro";
 import { SITE, withBase } from "../../config";
 
-const posts = (await getCollection("writing", ({ data }) => !data.draft)).sort(
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime(),
 );
 ---
 
 <BaseLayout
-  title={`Writing | ${SITE.name}`}
-  description={`Notes on platform engineering, observability and developer tooling by ${SITE.name}.`}
+  title={`Blog | ${SITE.name}`}
+  description={`Posts on platform engineering, observability and developer tooling by ${SITE.name}.`}
 >
   <SiteHeader />
   <main id="main-content" class="bg-canvas">
     <header class="px-6 py-20 sm:px-10 lg:px-[6vw] lg:py-28">
       <div class="mx-auto max-w-[94rem]">
-        <p class="font-mono text-xs uppercase text-accent">Writing / Notes</p>
-        <h1 class="my-10 text-6xl leading-[.92] font-semibold sm:text-7xl lg:text-8xl">Writing</h1>
-        <p class="ml-auto max-w-3xl text-lg leading-8 text-muted sm:text-xl">Short technical notes on things I ran into and how they were resolved.</p>
+        <p class="font-mono text-xs uppercase text-accent">Blog / Notes and write-ups</p>
+        <h1 class="my-10 text-6xl leading-[.92] font-semibold sm:text-7xl lg:text-8xl">Blog</h1>
+        <p class="ml-auto max-w-3xl text-lg leading-8 text-muted sm:text-xl">Write-ups on problems I ran into, what caused them, and how they were resolved.</p>
       </div>
     </header>
-    <section class="border-t border-border bg-surface px-6 py-16 sm:px-10 lg:px-[6vw] lg:py-20" aria-labelledby="writing-list-title">
-      <h2 class="sr-only" id="writing-list-title">All posts</h2>
+    <section class="border-t border-border bg-surface px-6 py-16 sm:px-10 lg:px-[6vw] lg:py-20" aria-labelledby="blog-list-title">
+      <h2 class="sr-only" id="blog-list-title">All posts</h2>
       <ol class="mx-auto grid max-w-[94rem] list-none border-t border-border p-0">
         {posts.map((post, index) => (
           <li>
-            <a class="group grid gap-2 border-b border-border py-8 no-underline sm:grid-cols-[4rem_1fr_auto] sm:items-baseline sm:gap-6" href={withBase(`/writing/${post.id}/`)}>
+            <a class="group grid gap-2 border-b border-border py-8 no-underline sm:grid-cols-[4rem_1fr_auto] sm:items-baseline sm:gap-6" href={withBase(`/blog/${post.id}/`)}>
               <span class="font-mono text-xs uppercase text-accent">{String(index + 1).padStart(2, "0")}</span>
               <span>
                 <strong class="block text-2xl font-medium transition-colors group-hover:text-accent sm:text-3xl">{post.data.title}</strong>

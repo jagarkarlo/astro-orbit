@@ -3,7 +3,7 @@ import { withBase } from "../config";
 
 export async function GET() {
   const projects = await getCollection("projects", ({ data }) => !data.draft);
-  const writing = await getCollection("writing", ({ data }) => !data.draft);
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
 
   const index = [
     ...projects.map((project) => ({
@@ -13,11 +13,11 @@ export async function GET() {
       href: withBase(`/work/${project.id}/`),
       terms: [project.data.category, ...project.data.stack].join(" "),
     })),
-    ...writing.map((post) => ({
-      kind: "Writing",
+    ...posts.map((post) => ({
+      kind: "Blog",
       title: post.data.title,
       description: post.data.description,
-      href: withBase(`/writing/${post.id}/`),
+      href: withBase(`/blog/${post.id}/`),
       terms: post.data.tags.join(" "),
     })),
   ];

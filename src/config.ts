@@ -13,14 +13,16 @@ export const SITE = {
   location: "Your City",
   discipline: "Platform engineering",
   locale: "en",
-  /** Origin only. The subpath belongs in `base`. */
-  url: "https://your-username.github.io",
+  /** Origin only. The subpath belongs in `base`. Change to your own. */
+  url: "https://jagarkarlo.github.io",
   /** Set to "/" when deploying to a domain root. */
   base: "/astro-orbit",
   defaultTheme: "dark",
   themeColor: { dark: "#090d10", light: "#edf0ec" },
   socialImage: "/images/social-card.png",
   portrait: "/images/portrait.svg",
+  /** Path to a CV file in public/. Leave empty to hide the download link. */
+  cv: "",
   knowsAbout: ["Platform engineering", "Kubernetes", "Observability", "Developer tooling"],
 } as const;
 
@@ -30,7 +32,7 @@ export const NAV: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about/" },
   { label: "Work", href: "/work/" },
-  { label: "Writing", href: "/writing/" },
+  { label: "Blog", href: "/blog/" },
   { label: "Contact", href: "/contact/" },
 ];
 
