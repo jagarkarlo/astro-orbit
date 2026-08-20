@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { withBase } from "../config";
 
 type Props = {
   projects: CollectionEntry<"projects">[];
@@ -19,7 +20,7 @@ const { projects } = Astro.props;
       <div class="project-window__body">
         <div>
           <p class="font-mono text-xs uppercase text-accent">{project.data.category}</p>
-          <h3>{project.data.title}</h3>
+          <h3><a href={withBase(`/work/${project.id}/`)}>{project.data.title}</a></h3>
         </div>
         <p>{project.data.summary}</p>
         <strong>{project.data.outcome}</strong>
