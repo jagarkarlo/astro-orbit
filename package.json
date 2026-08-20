@@ -20,5 +20,8 @@
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19"
+  },
+  "overrides": {
+    "vite": "^6.4.3"
   }
 }
