@@ -19,7 +19,8 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@astrojs/rss": "^4.0.19"
+    "@astrojs/rss": "^4.0.19",
+    "mermaid": "^11.17.0"
   },
   "overrides": {
     "vite": "^6.4.3"
