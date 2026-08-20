@@ -1,0 +1,222 @@
+---
+import { getCollection } from "astro:content";
+import { SITE, SOCIALS } from "../config";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const entries = (await getCollection("projects", ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const consoleData = {
+  role: SITE.role,
+  location: SITE.location,
+  tagline: SITE.tagline,
+  projects: entries.map((entry) => entry.data.title),
+  socials: SOCIALS.map((social) => ({ label: social.label, href: social.href })),
+};
+---
+
+<portfolio-terminal data-console={JSON.stringify(consoleData)}>
+  <dialog class="m-auto max-h-[calc(100svh-2rem)] w-[min(56rem,calc(100%-2rem))] overflow-hidden border border-border bg-raised p-0 text-foreground shadow-2xl backdrop:bg-canvas/85 backdrop:backdrop-blur-sm" data-terminal data-base={base} aria-labelledby="terminal-title">
+    <header class="flex items-center justify-between border-b border-border px-5 py-4 sm:px-6">
+      <div class="flex min-w-0 items-center gap-3">
+        <span class="size-2 shrink-0 bg-accent" aria-hidden="true"></span>
+        <div class="min-w-0">
+          <h2 class="font-mono text-xs font-medium uppercase" id="terminal-title">Portfolio command center</h2>
+          <p class="mt-1 font-mono text-xs text-muted">Navigate, inspect projects, or query the stack.</p>
+        </div>
+      </div>
+      <button class="grid size-10 shrink-0 place-items-center border border-transparent font-mono text-lg text-muted transition-colors hover:border-border hover:text-foreground" type="button" data-terminal-close aria-label="Close command center">
+        <span aria-hidden="true">×</span>
+      </button>
+    </header>
+
+    <section class="border-b border-border bg-surface/45 px-5 py-4 sm:px-6" aria-labelledby="terminal-shortcuts-title">
+      <div class="mb-3 flex items-center justify-between gap-4">
+        <h3 class="font-mono text-xs font-medium uppercase text-muted" id="terminal-shortcuts-title">Command map</h3>
+        <span class="hidden font-mono text-xs text-muted sm:inline">↑↓ history · Tab complete · Esc close</span>
+      </div>
+      <div class="grid grid-cols-2 gap-px overflow-hidden border border-border bg-border sm:grid-cols-3">
+        <button class="bg-raised px-4 py-3 text-left font-mono text-xs transition-colors hover:bg-surface hover:text-accent" type="button" data-terminal-command="help"><span class="mr-2 text-accent">01</span>help</button>
+        <button class="bg-raised px-4 py-3 text-left font-mono text-xs transition-colors hover:bg-surface hover:text-accent" type="button" data-terminal-command="profile"><span class="mr-2 text-accent">02</span>profile</button>
+        <button class="bg-raised px-4 py-3 text-left font-mono text-xs transition-colors hover:bg-surface hover:text-accent" type="button" data-terminal-command="projects"><span class="mr-2 text-accent">03</span>projects</button>
+        <button class="bg-raised px-4 py-3 text-left font-mono text-xs transition-colors hover:bg-surface hover:text-accent" type="button" data-terminal-command="skills"><span class="mr-2 text-accent">04</span>skills</button>
+        <button class="bg-raised px-4 py-3 text-left font-mono text-xs transition-colors hover:bg-surface hover:text-accent" type="button" data-terminal-command="status"><span class="mr-2 text-accent">05</span>status</button>
+        <button class="bg-raised px-4 py-3 text-left font-mono text-xs transition-colors hover:bg-surface hover:text-accent" type="button" data-terminal-command="contact"><span class="mr-2 text-accent">06</span>contact</button>
+      </div>
+    </section>
+
+    <div class="min-h-[16rem] max-h-[42svh] overflow-y-auto px-5 py-5 font-mono text-sm leading-6 sm:px-6" data-terminal-output role="log" aria-live="polite" aria-relevant="additions">
+      <p class="text-accent">Command center ready.</p>
+      <p class="mt-1 text-muted">Choose a command above or type <span class="text-foreground">help</span>.</p>
+    </div>
+
+    <form class="flex items-center gap-3 border-t border-border bg-canvas/30 px-5 py-4 font-mono text-sm sm:px-6" data-terminal-form>
+      <label class="text-accent" for="terminal-input" aria-label="Command prompt">›</label>
+      <input class="min-w-0 flex-1 border-0 bg-transparent text-foreground caret-accent outline-none placeholder:text-muted" id="terminal-input" data-terminal-input autocomplete="off" spellcheck="false" placeholder="Enter a command" aria-label="Command" />
+      <span class="hidden text-xs text-muted sm:inline">Enter ↵</span>
+    </form>
+  </dialog>
+</portfolio-terminal>
+
+<script>
+  class PortfolioTerminalElement extends HTMLElement {
+    controller?: AbortController;
+    history: string[] = [];
+    historyIndex = 0;
+
+    get dialog() {
+      return this.querySelector<HTMLDialogElement>("[data-terminal]");
+    }
+
+    get input() {
+      return this.querySelector<HTMLInputElement>("[data-terminal-input]");
+    }
+
+    get output() {
+      return this.querySelector<HTMLElement>("[data-terminal-output]");
+    }
+
+    appendLine(text: string, className = "text-muted") {
+      const paragraph = document.createElement("p");
+      paragraph.className = className;
+      paragraph.textContent = text;
+      this.output?.append(paragraph);
+    }
+
+    open() {
+      if (this.dialog && !this.dialog.open) this.dialog.showModal();
+      requestAnimationFrame(() => this.input?.focus());
+    }
+
+    close() {
+      this.dialog?.close();
+    }
+
+    navigate(path: "" | "about" | "work" | "contact") {
+      const base = this.dialog?.dataset.base ?? "";
+      window.location.href = path ? `${base}/${path}/` : `${base}/`;
+    }
+
+    run(rawCommand: string) {
+      const command = rawCommand.trim().toLowerCase().replace(/\s+/g, " ");
+      if (!command) return;
+
+      this.appendLine(`› ${command}`, "mt-4 text-accent");
+      if (this.history.at(-1) !== command) this.history.push(command);
+      this.historyIndex = this.history.length;
+
+      const config = JSON.parse(this.dataset.console ?? "{}") as {
+        role?: string;
+        location?: string;
+        tagline?: string;
+        projects?: string[];
+        socials?: { label: string; href: string }[];
+      };
+      const socialHref = (label: string) =>
+        config.socials?.find((social) => social.label.toLowerCase() === label)?.href;
+
+      const responses: Record<string, string[]> = {
+        help: [
+          "INSPECT   profile  projects  skills  status  contact",
+          "NAVIGATE  home  about  work  github  linkedin",
+          "CONTROL   clear  exit",
+          "Tip: use ↑/↓ for history and Tab to complete a command.",
+        ],
+        profile: [`${config.role} in ${config.location}. ${config.tagline}`],
+        projects: config.projects ?? [],
+        skills: ["PLATFORM       Kubernetes · Argo CD · Docker", "INFRASTRUCTURE Azure · Terraform · Linux", "OBSERVABILITY  Prometheus · Grafana · Loki", "DEVELOPMENT    TypeScript · Python · GitLab"],
+        stack: ["Alias: skills", "PLATFORM       Kubernetes · Argo CD · Docker", "INFRASTRUCTURE Azure · Terraform · Linux", "OBSERVABILITY  Prometheus · Grafana · Loki", "DEVELOPMENT    TypeScript · Python · GitLab"],
+        status: ["PORTFOLIO  online", `PROJECTS   ${config.projects?.length ?? 0} public repositories`, `LOCATION   ${config.location}`, "STATUS     available"],
+        contact: (config.socials ?? []).map(
+          (social) => `${social.label.padEnd(9)} ${social.href.replace(/^https?:\/\//, "")}`,
+        ),
+      };
+
+      if (command === "clear") {
+        this.output?.replaceChildren();
+      } else if (command === "exit" || command === "close") {
+        this.close();
+      } else if (command === "home") {
+        this.navigate("");
+      } else if (command === "about") {
+        this.navigate("about");
+      } else if (command === "work") {
+        this.navigate("work");
+      } else if (command === "go contact") {
+        this.navigate("contact");
+      } else if (command === "github") {
+        const href = socialHref("github");
+        if (href) window.open(href, "_blank", "noopener,noreferrer");
+        this.appendLine("Opening GitHub…");
+      } else if (command === "linkedin") {
+        const href = socialHref("linkedin");
+        if (href) window.open(href, "_blank", "noopener,noreferrer");
+        this.appendLine("Opening LinkedIn…");
+      } else if (responses[command]) {
+        responses[command].forEach((line) => this.appendLine(line));
+      } else {
+        this.appendLine(`Unknown command: ${command}. Type help.`, "text-[#e5a098]");
+      }
+
+      this.output?.scrollTo({ top: this.output.scrollHeight, behavior: "smooth" });
+    }
+
+    connectedCallback() {
+      this.controller?.abort();
+      this.controller = new AbortController();
+      const listenerOptions = { signal: this.controller.signal } as AddEventListenerOptions;
+
+      document.addEventListener("click", (event) => {
+        if (!(event.target instanceof Element)) return;
+        if (event.target.closest("[data-terminal-open]")) this.open();
+      }, listenerOptions);
+
+      this.addEventListener("click", (event) => {
+        if (!(event.target instanceof Element)) return;
+        if (event.target.closest("[data-terminal-close]")) this.close();
+        if (event.target === this.dialog) this.close();
+        const commandButton = event.target.closest<HTMLElement>("[data-terminal-command]");
+        if (commandButton?.dataset.terminalCommand) {
+          this.run(commandButton.dataset.terminalCommand);
+          this.input?.focus();
+        }
+      }, listenerOptions);
+
+      document.addEventListener("keydown", (event) => {
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+          event.preventDefault();
+          this.open();
+        }
+      }, listenerOptions);
+
+      this.querySelector("[data-terminal-form]")?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!this.input) return;
+        const command = this.input.value;
+        this.input.value = "";
+        this.run(command);
+      }, listenerOptions);
+
+      this.input?.addEventListener("keydown", (event) => {
+        const commands = ["help", "profile", "projects", "skills", "status", "contact", "home", "about", "work", "github", "linkedin", "clear", "exit"];
+        if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+          event.preventDefault();
+          this.historyIndex = event.key === "ArrowUp" ? Math.max(0, this.historyIndex - 1) : Math.min(this.history.length, this.historyIndex + 1);
+          this.input!.value = this.history[this.historyIndex] ?? "";
+        } else if (event.key === "Tab") {
+          const match = commands.find((command) => command.startsWith(this.input!.value.trim().toLowerCase()));
+          if (match) {
+            event.preventDefault();
+            this.input!.value = match;
+          }
+        }
+      }, listenerOptions);
+    }
+
+    disconnectedCallback() {
+      this.controller?.abort();
+    }
+  }
+
+  if (!customElements.get("portfolio-terminal")) customElements.define("portfolio-terminal", PortfolioTerminalElement);
+</script>
