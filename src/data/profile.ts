@@ -11,6 +11,7 @@ export type AcademicProject = {
   period: string;
   description: string;
   stack: string[];
+  links?: { label: string; href: string }[];
 };
 
 /** Sample content. Replace every field with your own. */

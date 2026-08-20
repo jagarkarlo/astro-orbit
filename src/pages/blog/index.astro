@@ -18,21 +18,23 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
   <main id="main-content" class="bg-canvas">
     <header class="px-6 py-20 sm:px-10 lg:px-[6vw] lg:py-28">
       <div class="mx-auto max-w-[94rem]">
-        <p class="font-mono text-xs uppercase text-accent">Blog / Notes and write-ups</p>
+        <p class="font-mono text-xs uppercase text-accent">Blog</p>
         <h1 class="my-10 text-6xl leading-[.92] font-semibold sm:text-7xl lg:text-8xl">Blog</h1>
-        <p class="ml-auto max-w-3xl text-lg leading-8 text-muted sm:text-xl">Write-ups on problems I ran into, what caused them, and how they were resolved.</p>
+        <p class="ml-auto max-w-3xl text-lg leading-8 text-muted sm:text-xl">Posts on engineering, study, and the work in between.</p>
       </div>
     </header>
     <section class="border-t border-border bg-surface px-6 py-16 sm:px-10 lg:px-[6vw] lg:py-20" aria-labelledby="blog-list-title">
       <h2 class="sr-only" id="blog-list-title">All posts</h2>
       <ol class="mx-auto grid max-w-[94rem] list-none border-t border-border p-0">
-        {posts.map((post, index) => (
+        {posts.map((post) => (
           <li>
-            <a class="group grid gap-2 border-b border-border py-8 no-underline sm:grid-cols-[4rem_1fr_auto] sm:items-baseline sm:gap-6" href={withBase(`/blog/${post.id}/`)}>
-              <span class="font-mono text-xs uppercase text-accent">{String(index + 1).padStart(2, "0")}</span>
+            <a class="group grid gap-2 border-b border-border py-8 no-underline sm:grid-cols-[1fr_auto] sm:items-baseline sm:gap-6" href={withBase(`/blog/${post.id}/`)}>
               <span>
                 <strong class="block text-2xl font-medium transition-colors group-hover:text-accent sm:text-3xl">{post.data.title}</strong>
                 <span class="mt-2 block max-w-2xl text-sm leading-6 text-muted">{post.data.description}</span>
+                {post.data.linkedin && (
+                  <span class="mt-3 inline-block border border-border px-2 py-1 font-mono text-xs uppercase text-muted">Also on LinkedIn</span>
+                )}
               </span>
               <time class="font-mono text-xs uppercase text-muted" datetime={post.data.date.toISOString()}>
                 {post.data.date.toLocaleDateString("en-GB", { year: "numeric", month: "short", day: "numeric" })}
