@@ -10,6 +10,18 @@ Static, zero client framework, one config file.
 > **Use this template** — click the green button on GitHub, or
 > `gh repo create my-portfolio --template jagarkarlo/astro-orbit`.
 
+## What you get
+
+- Home, about, work, writing, search, contact and 404 pages
+- **Project detail pages** at `/work/<slug>/` rendered from Markdown
+- **A writing collection** at `/writing/` with per-post pages and drafts
+- **Client-side search** over projects and writing, no framework, no service
+- **RSS feed** at `/rss.xml`
+- **A command console** on `Ctrl+K` / `Cmd+K`
+- Sitemap, robots policy, Open Graph tags and Schema.org person metadata
+- Light and dark themes with no flash on navigation
+- GitHub Pages deployment workflow
+
 ## Why this template
 
 Most portfolio templates give you either a clean layout or a showy background.
@@ -110,6 +122,37 @@ Optional longer description.
 Validated at build time by the Zod schema in
 [`src/content.config.ts`](src/content.config.ts). `featured: true` promotes it
 to the home page; `draft: true` hides it everywhere.
+
+The Markdown body becomes the project's detail page at `/work/<slug>/`, so this
+is where a case study goes: the problem, what you built, and the evidence.
+
+## Adding a post
+
+Create a Markdown file in `src/content/writing/`:
+
+```markdown
+---
+title: Post title
+description: One line, used in listings, search and RSS.
+date: 2026-01-01
+updated: 2026-02-01
+tags: [Kubernetes, Observability]
+draft: false
+---
+
+Your post.
+```
+
+Posts are ordered newest first. `draft: true` keeps a post out of the index, the
+sitemap, the search index and the feed.
+
+## Search
+
+`src/pages/search.json.ts` emits a static JSON index at build time covering both
+collections. `src/pages/search.astro` fetches it once and filters in the
+browser with a custom element — no search service, no client framework, and it
+works on a static host. For a few hundred entries this is faster than anything
+you would pay for.
 
 ## Customising the hero scene
 
