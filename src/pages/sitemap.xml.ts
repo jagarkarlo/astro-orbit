@@ -1,8 +1,20 @@
 import type { APIRoute } from "astro";
+import { getCollection } from "astro:content";
 
-export const GET: APIRoute = ({ site }) => {
+export const GET: APIRoute = async ({ site }) => {
   const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-  const routes = ["/", "/about/", "/work/", "/contact/"];
+  const projects = await getCollection("projects", ({ data }) => !data.draft);
+  const writing = await getCollection("writing", ({ data }) => !data.draft);
+  const routes = [
+    "/",
+    "/about/",
+    "/work/",
+    "/writing/",
+    "/search/",
+    "/contact/",
+    ...projects.map((project) => `/work/${project.id}/`),
+    ...writing.map((post) => `/writing/${post.id}/`),
+  ];
   const locations = routes.map((route) => new URL(`${base}${route}`, site));
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
