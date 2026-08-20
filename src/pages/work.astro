@@ -33,7 +33,7 @@ const projects = (await getCollection("projects", ({ data }) => !data.draft)).so
       </div>
       <ProjectList projects={projects} />
     </section>
-    <AcademicProjects projects={profile.academicProjects} />
+    <AcademicProjects projects={profile.academicProjects} index="02" />
   </main>
   <SiteFooter />
 </BaseLayout>

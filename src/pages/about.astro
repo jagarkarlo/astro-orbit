@@ -32,8 +32,8 @@ import { profile } from "../data/profile";
     </header>
     <ProfileTimeline id="experience" label="01" title="Experience" items={profile.experience} />
     <ProfileTimeline id="education" label="02" title="Education" items={profile.education} tone="mist" />
-    <Recognition items={profile.recognition} />
-    <Credentials certifications={profile.certifications} languages={profile.languages} />
+    <Recognition items={profile.recognition} index="03" />
+    <Credentials certifications={profile.certifications} languages={profile.languages} index="04" />
   </main>
   <SiteFooter />
 </BaseLayout>
